@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuGöl Sınav Asistanı (Karne, YKS, LGS, KPSS)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #f43f5e;
+            
+            --bg-color: #f1f5f9;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --input-bg: rgba(241, 245, 249, 0.8);
+            --card-bg: rgba(255, 255, 255, 1);
+            --card-hover: #ffffff;
+            --shadow-color: rgba(79, 70, 229, 0.12);
+            --input-border: rgba(226, 232, 240, 1);
+            --bottom-bar-bg: #f8fafc;
+        }
+
+        body.dark-mode {
+            --bg-color: #0b0f19;
+            --glass-bg: rgba(15, 23, 42, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --input-bg: rgba(30, 41, 59, 0.6);
+            --card-bg: rgba(15, 23, 42, 0.95);
+            --card-hover: rgba(20, 28, 48, 1);
+            --shadow-color: rgba(0, 0, 0, 0.6);
+            --input-border: rgba(51, 65, 85, 0.8);
+            --bottom-bar-bg: #0f172a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(79, 70, 229, 0.4); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(79, 70, 229, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 100px 10px 40px 10px;
+            display: flex; flex-direction: column; align-items: center;
+            transition: all 0.5s ease;
+        }
+
+        /* YÜZEN DURUM ÇUBUĞU */
+        .live-status-bar { position: fixed; top: 15px; left: 50%; transform: translate(-50%, -150%); width: 95%; max-width: 650px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 30px; z-index: 1000; padding: 15px 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.12); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .live-status-bar.visible { transform: translate(-50%, 0); }
+        .live-header { display: flex; justify-content: space-between; align-items: center; }
+        .live-info { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .score-container { display: flex; flex-direction: column; }
+        .live-score { font-size: 26px; font-weight: 900; color: var(--primary); line-height: 1; transition: all 0.3s;}
+        .live-label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .target-text { font-size: 11px; font-weight: 700; color: var(--warning); margin-top: 5px; display: inline-block;}
+        .live-doc { font-size: 13px; font-weight: 800; padding: 8px 14px; border-radius: 14px; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.15); letter-spacing: 0.5px; transition: all 0.5s; background: linear-gradient(135deg, var(--success), #059669); }
+        .doc-warning { background: linear-gradient(135deg, var(--warning), #d97706); }
+        .doc-danger { background: linear-gradient(135deg, var(--danger), #e11d48); }
+        .btn-close-status { background: rgba(244, 63, 94, 0.1); color: var(--danger); border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; }
+        .btn-close-status:hover { background: var(--danger); color: white; transform: rotate(90deg) scale(1.1); }
+        .progress-container { width: calc(100% - 40px); height: 6px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; position: absolute; bottom: -3px; left: 20px;}
+        .progress-bar { height: 100%; width: 0%; transition: width 0.8s, background 0.5s; border-radius: 10px; background: var(--primary);}
+
+        /* ANA KAPSAYICI */
+        .container { background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); padding: 30px 20px; border-radius: 36px; box-shadow: 0 25px 80px var(--shadow-color); width: 100%; max-width: 1100px; margin-bottom: 30px; animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 20px;}
+        .header h1 { font-weight: 900; font-size: 22px; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 8px; }
+        .theme-toggle { background: var(--card-bg); border: 1.5px solid var(--input-border); color: var(--text-color); padding: 10px 18px; border-radius: 16px; cursor: pointer; font-weight: 700; font-size: 14px; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; flex-shrink: 0;}
+        .theme-toggle:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+
+        /* SEKMELER */
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; background: var(--input-bg); padding: 8px; border-radius: 20px; border: 1.5px solid var(--input-border); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { flex: 1; background: transparent; border: none; padding: 12px 20px; border-radius: 14px; font-size: 15px; font-weight: 800; color: var(--text-muted); cursor: pointer; transition: 0.3s; min-width: max-content;}
+        .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 15px var(--shadow-color); }
+
+        /* OBP VE MESLEK SEÇENEKLERİ (SADECE YKS'DE) */
+        .yks-options { background: var(--card-bg); border: 2px solid var(--primary); border-radius: 20px; padding: 15px 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(79, 70, 229, 0.1); }
+        .yks-opt-item { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .yks-opt-item label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .yks-opt-item input { font-size: 16px; padding: 10px 14px; border-radius: 12px; border: 1.5px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 700; transition: 0.3s;}
+        .yks-opt-item input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); outline: none; background: var(--card-bg);}
+        .yks-opt-check { flex: 1; display: flex; align-items: center; gap: 12px; background: rgba(79, 70, 229, 0.05); padding: 12px; border-radius: 14px; border: 1px dashed var(--primary); }
+        .yks-opt-check input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--primary); cursor: pointer; }
+        .yks-opt-check label { font-size: 13px; font-weight: 700; color: var(--text-color); cursor: pointer; line-height: 1.3;}
+
+        /* DİZİLİM VE KARTLAR */
+        .app-section { display: none; }
+        .app-section.active { display: block; animation: fadeIn 0.4s ease; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 25px; }
+
+        .course-card { background: var(--card-bg); border: 1.5px solid var(--input-border); border-radius: 28px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); transition: all 0.4s; display: flex; flex-direction: column; gap: 14px; position: relative;}
+        .course-card:hover { transform: translateY(-4px); border-color: rgba(79, 70, 229, 0.4); box-shadow: 0 20px 45px var(--shadow-color); }
+        
+        input { width: 100%; text-align: center; padding: 12px 5px; font-size: 16px; border-radius: 14px; border: 1.5px solid var(--input-border); background: var(--input-bg); font-weight: 700; color: var(--text-color); transition: 0.3s; }
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); background: var(--card-bg); }
+        input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        /* KARNE VE SINAV INPUT DETAYLARI */
+        .c-name-input { padding: 12px 16px; font-size: 16px; text-align: center; font-weight: 800; letter-spacing: 0.5px; }
+        .card-controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+        .hours-wrapper { display: flex; align-items: center; background: var(--input-bg); border: 1.5px solid var(--input-border); border-radius: 14px; padding: 0 12px; transition: 0.3s; flex-grow: 1; justify-content: center; gap: 8px; height: 42px; }
+        .hours-wrapper span { font-size: 13px; font-weight: 700; color: var(--text-muted); }
+        .hours-wrapper input { border: none !important; padding: 0; width: 40px; background: transparent; font-size: 16px; box-shadow: none !important; }
+        .btn-delete-card { background: rgba(244, 63, 94, 0.08); color: var(--danger); width: 42px; height: 42px; border-radius: 14px; font-size: 18px; display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-delete-card:hover { background: var(--danger); color: white; transform: rotate(90deg) scale(1.1); }
+        
+        .karne-grades { display: flex; flex-wrap: wrap; gap: 6px; }
+        .grade-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1;}
+        .row-top { width: calc(33.333% - 4px); flex: none;}
+        .row-bot { width: calc(50% - 3px); flex: none;}
+        .grade-item label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+
+        .c-name-static { padding: 12px 16px; font-size: 16px; border-radius: 14px; text-align: center; font-weight: 800; background: var(--input-bg); color: var(--text-color); border: 1.5px solid var(--input-border); }
+        .c-info { font-size: 11px; text-align: center; color: var(--text-muted); font-weight: 700; margin-top: -8px;}
+        .exam-grades { display: flex; gap: 10px; justify-content: center; }
+
+        /* 🔥 BELİRGİN NET VE ORTALAMA KUTULARI 🔥 */
+        .card-bottom { background: var(--bottom-bar-bg); border-radius: 16px; border: 2px solid var(--input-border); position: relative; overflow: hidden; transition: all 0.4s; }
+        .c-bg-progress { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; transition: width 0.8s, background 0.5s; z-index: 0; opacity: 0.15; }
+        .c-content { position: relative; z-index: 1; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .c-avg-val { 
+            font-size: 18px; font-weight: 900; color: white !important; 
+            background: var(--text-muted); padding: 5px 16px; border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.4s; 
+            letter-spacing: 0.5px;
+        }
+        .c-status-text { font-size: 14px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;}
+
+        .card-bottom.status-success { border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05); }
+        .card-bottom.status-warning { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05); }
+        .card-bottom.status-danger { border-color: rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.05); }
+        
+        .status-success .c-status-text { color: var(--success); }
+        .status-warning .c-status-text { color: var(--warning); }
+        .status-danger .c-status-text { color: var(--danger); }
+
+        .status-success .c-avg-val { background: var(--success); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35); }
+        .status-warning .c-avg-val { background: var(--warning); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35); }
+        .status-danger .c-avg-val { background: var(--danger); box-shadow: 0 4px 15px rgba(244, 63, 94, 0.35); }
+
+        /* AKSİYON BUTONLARI */
+        .action-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+        .btn { border: none; border-radius: 20px; cursor: pointer; font-weight: 800; transition: all 0.3s; padding: 16px; font-size: 15px; flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .btn:active { transform: scale(0.95); }
+        .btn-add { background: var(--card-bg); color: var(--primary); border: 2px solid rgba(79, 70, 229, 0.2); }
+        .btn-add:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-2px);}
+        .btn-sort { background: var(--card-bg); color: var(--warning); border: 2px solid rgba(245, 158, 11, 0.2); }
+        .btn-sort:hover { background: var(--warning); color: white; border-color: var(--warning); transform: translateY(-2px);}
+        .btn-clear { background: var(--card-bg); color: var(--danger); border: 2px solid rgba(244, 63, 94, 0.2); }
+        .btn-clear:hover { background: var(--danger); color: white; border-color: var(--danger); transform: translateY(-2px);}
+        .btn-calc { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; flex-basis: 100%; font-size: 18px; box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3); }
+        .btn-calc:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(79, 70, 229, 0.4); }
+
+        /* DİPLOMA VE SONUÇ BELGELERİ */
+        #result-container { display: none; width: 100%; margin-top: 10px; max-width: 900px; animation: fadeIn 0.8s ease-out; background: transparent; border: none; box-shadow: none;}
+        .print-area { display: none; background: #ffffff; color: #0f172a; padding: 40px; border-radius: 20px; width: 100%; margin: 0 auto; box-shadow: 0 30px 60px rgba(0,0,0,0.15); position: relative; overflow: hidden; border: 8px solid #f1f5f9; outline: 2px solid #cbd5e1; outline-offset: -10px; }
+        .print-area.active { display: block; }
+        body.dark-mode .print-area { border: 8px solid #f1f5f9; }
+        
+        .k-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 35px; font-weight: 900; color: rgba(0,0,0,0.03); white-space: nowrap; z-index: 0; pointer-events: none; letter-spacing: 2px;}
+        .k-inner { position: relative; z-index: 1; padding: 10px; }
+        .k-header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
+        .k-titles h2 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+        .k-titles h3 { font-size: 15px; font-weight: 700; color: #64748b; letter-spacing: 2px;}
+
+        .k-student-info { display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 16px; border-bottom: 1px dotted #cbd5e1; padding-bottom: 15px;}
+        .k-s-line { display: flex; gap: 10px; align-items: flex-end;}
+        .k-s-label { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase;}
+        .k-s-val { font-size: 18px; font-weight: 800; color: #0f172a; border-bottom: 1px solid #1e293b; min-width: 200px;}
+
+        .k-table-wrap { border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; margin-bottom: 30px; }
+        .k-table { width: 100%; border-collapse: collapse; background: #ffffff; }
+        .k-table th, .k-table td { padding: 12px 10px; text-align: center; font-size: 14px; color: #334155; border-bottom: 1px solid #f1f5f9; }
+        .k-table th { background: #1e293b; color: #ffffff; font-weight: 600; font-size: 13px; text-transform: uppercase;}
+        .k-table td:first-child { text-align: left; font-weight: 700; color: #0f172a; }
+        .k-table tbody tr:nth-child(even) { background: #f8fafc; }
+        
+        .k-grade-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-weight: 800; border: 1px solid;}
+        .k-pass { background: #f0fdf4; color: #166534; border-color: #bbf7d0;}
+        .k-fail { background: #fff1f2; color: #be123c; border-color: #fecdd3;}
+
+        .k-footer { display: flex; gap: 20px; margin-bottom: 20px;}
+        .k-score-box, .k-result-box { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; text-align: center;}
+        .k-score-box span, .k-result-box span { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;}
+        .k-score-box strong { font-size: 26px; font-weight: 900; color: #4f46e5; }
+        .k-result-box strong { font-size: 20px; font-weight: 900; color: #10b981; }
+        .k-result-box.fail strong { color: #e11d48; }
+
+        /* YKS 5'Lİ PUAN IZGARASI */
+        .yks-scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
+        .yks-scores .k-score-box { padding: 15px 10px; border-top: 4px solid var(--primary); }
+        .yks-scores .k-score-box strong { font-size: 22px; }
+        .yks-scores .k-score-box span { font-size: 11px; }
+
+        .k-app-brand { text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .k-app-brand span { font-weight: 900; font-size: 15px; background: linear-gradient(135deg, #4f46e5, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; }
+        .k-app-brand small { font-size: 10px; font-weight: 600; color: #94a3b8; margin-top: 3px; }
+
+        .btn-download { background: linear-gradient(135deg, #10b981, #059669); color: white; width: 100%; padding: 22px; font-size: 18px; font-weight: 900; margin-top: 25px; border-radius: 24px; border: none; cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 30px;}
+        .btn-download:hover { transform: translateY(-4px); box-shadow: 0 20px 45px rgba(16, 185, 129, 0.4); }
+
+        /* MOBİL UYUM */
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .header h1 { font-size: 18px; }
+            .yks-options { flex-direction: column; align-items: stretch; gap: 15px; padding: 15px;}
+            
+            .print-area { padding: 20px 10px; border-width: 4px; outline-offset: -6px;}
+            .k-titles h2 { font-size: 18px; }
+            .k-student-info { flex-direction: column; gap: 10px;}
+            .k-s-val { width: 100%; min-width: auto;}
+            .k-table th, .k-table td { padding: 8px 4px; font-size: 11px; }
+            .k-footer { flex-direction: column; gap: 10px;}
+            .k-watermark { font-size: 20px; }
+            .btn-calc { flex-basis: 100%; }
+
+            .course-card { padding: 12px; gap: 10px; border-radius: 24px;}
+            .c-name-static, .c-name-input { padding: 8px; font-size: 13px; }
+            .c-info { font-size: 10px; }
+            .grade-item label { font-size: 9px; }
+            input { font-size: 15px; padding: 8px 2px; }
+            .c-content { padding: 10px; }
+            .c-status-text { font-size: 11px; }
+            .c-avg-val { font-size: 16px; padding: 4px 10px;}
+            
+            .hours-wrapper { height: 36px; padding: 0 8px; }
+            .hours-wrapper span { font-size: 11px; }
+            .hours-wrapper input { width: 28px; font-size: 15px; }
+            .btn-delete-card { width: 36px; height: 36px; font-size: 15px; }
+            .karne-grades { gap: 4px; }
+            .k-g { font-size: 14px; padding: 6px 0; }
+
+            .yks-scores { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .yks-scores .k-score-box { padding: 10px; border-top-width: 3px;}
+            .yks-scores .k-score-box strong { font-size: 18px; }
+            .yks-scores .k-score-box span { font-size: 9px; }
+            .yks-scores .k-score-box:last-child { grid-column: span 2; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="live-status-bar" class="live-status-bar">
+        <div class="live-header">
+            <div class="live-info">
+                <div class="score-container">
+                    <div class="live-label" id="live-label">Tahmini Puan</div>
+                    <div class="live-score" id="live-score-text">0.000</div>
+                    <div class="target-text" id="live-target-text"></div>
+                </div>
+                <div class="live-doc" id="live-badge">Sınav</div>
+            </div>
+            <button class="btn-close-status" onclick="closeLiveBar()">✖</button>
+        </div>
+        <div class="progress-container" id="live-progress-bar" style="display:none;"><div class="progress-bar" id="live-progress"></div></div>
+    </div>
+
+    <datalist id="dersler">
+        <option value="Türkçe"></option><option value="Matematik"></option><option value="Fen Bilimleri"></option>
+        <option value="Sosyal Bilgiler"></option><option value="İngilizce"></option><option value="Din Kültürü"></option>
+        <option value="Fizik"></option><option value="Kimya"></option><option value="Biyoloji"></option>
+        <option value="Tarih"></option><option value="Coğrafya"></option><option value="Edebiyat"></option>
+    </datalist>
+
+    <div class="container">
+        <div class="header">
+            <h1><span>🎯</span> MuGöl Sınav Asistanı</h1>
+            <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙 Gece Modu</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('karne')">🏫 Karne Hesapla</button>
+            <button class="tab-btn" onclick="switchTab('lgs')">📚 LGS</button>
+            <button class="tab-btn" onclick="switchTab('yks')">🎓 YKS (Tüm Oturumlar)</button>
+            <button class="tab-btn" onclick="switchTab('kpss')">🏢 KPSS</button>
+        </div>
+
+        <!-- 1. KARNE BÖLÜMÜ -->
+        <div id="karne-section" class="app-section active">
+            <div class="grid-2" id="course-list"></div>
+            <div class="action-buttons">
+                <button class="btn btn-add" onclick="addKarneCourse()">➕ Yeni Ders</button>
+                <button class="btn btn-sort" onclick="sortKarneCourses()">🔄 Sırala</button>
+                <button class="btn btn-clear" onclick="clearKarneData()">🗑️ Temizle</button>
+                <button class="btn btn-calc" onclick="generateKarneCard()">🎉 Karne Oluştur</button>
+            </div>
+        </div>
+
+        <!-- 2. LGS BÖLÜMÜ -->
+        <div id="lgs-section" class="app-section"><div class="grid-2 exam-grid" id="lgs-grid"></div></div>
+        
+        <!-- 3. YKS BÖLÜMÜ (OBP + TYT + AYT + YDT) -->
+        <div id="yks-section" class="app-section">
+            <div class="yks-options">
+                <div class="yks-opt-item">
+                    <label>Diploma Notu (OBP için 50-100)</label>
+                    <input type="number" id="yks-diploma" placeholder="Örn: 85.50" min="50" max="100" step="0.01" oninput="saveExamData(); updateLiveIsland()">
+                </div>
+                <div class="yks-opt-check">
+                    <input type="checkbox" id="yks-meslek" onchange="saveExamData(); updateLiveIsland()">
+                    <label for="yks-meslek">Meslek Lisesi Ek Puanı<br><small style="color:var(--text-muted); font-weight:500;">(OBP x 0,06 / Diploma x 0,3 Tüm Y-Puanlarına Eklenir)</small></label>
+                </div>
+            </div>
+            <div class="grid-2 exam-grid" id="yks-grid"></div>
+        </div>
+
+        <!-- 4. KPSS BÖLÜMÜ -->
+        <div id="kpss-section" class="app-section"><div class="grid-2 exam-grid" id="kpss-grid"></div></div>
+
+        <!-- SINAVLAR İÇİN ORTAK BUTONLAR -->
+        <div class="action-buttons" id="exam-actions" style="display: none;">
+            <button class="btn btn-clear" onclick="clearExamData()">🗑️ Sıfırla</button>
+            <button class="btn btn-calc" onclick="generateExamCard()">🎉 Sonuç Belgesi Oluştur</button>
+        </div>
+    </div>
+
+    <!-- SONUÇ BELGESİ ALANI -->
+    <div id="result-container" class="container">
+        <h3 style="text-align:center; color: var(--text-color); margin-bottom: 25px; font-weight: 900; font-size: 20px;">👇 İndirilecek Belge 👇</h3>
+        
+        <!-- KARNE ÇIKTISI -->
+        <div id="print-karne" class="print-area">
+            <div class="k-watermark">MUGÖL SINAV ASİSTANI</div>
+            <div class="k-inner">
+                <div class="k-header"><div class="k-titles"><h2>T.C. MİLLÎ EĞİTİM BAKANLIĞI</h2><h3>ÖĞRENCİ DİJİTAL KARNESİ</h3></div></div>
+                <div class="k-student-info">
+                    <div class="k-s-line"><span class="k-s-label">Adı Soyadı:</span><div class="k-s-val"></div></div>
+                    <div class="k-s-line"><span class="k-s-label">Sınıfı:</span><div class="k-s-val" style="min-width: 80px;"></div></div>
+                </div>
+                <div class="k-table-wrap">
+                    <table class="k-table">
+                        <thead><tr><th style="width: 50%;">Ders Adı</th><th style="width: 25%;">Saat</th><th style="width: 25%;">Puan</th></tr></thead>
+                        <tbody id="print-karne-tbody"></tbody>
+                    </table>
+                </div>
+                <div class="k-footer">
+                    <div class="k-score-box"><span>Yıl Sonu Puanı</span><strong id="print-karne-score">0.00</strong></div>
+                    <div class="k-result-box" id="print-karne-result"><span>Sonuç</span><strong id="print-karne-doc">BELGE ALAMAZ</strong></div>
+                </div>
+                <div class="k-app-brand"><span>MuGöl Sınav Asistanı</span><small>Bu belge sistem tarafından otomatik hesaplanmıştır.</small></div>
+            </div>
+        </div>
+
+        <!-- SINAV ÇIKTISI -->
+        <div id="print-exam" class="print-area">
+            <div class="k-watermark" id="pe-watermark">SINAV SONUCU</div>
+            <div class="k-inner">
+                <div class="k-header"><div class="k-titles"><h2 id="pe-inst">T.C. KURUM BİLGİSİ</h2><h3 id="pe-name">SINAV SONUÇ BELGESİ</h3></div></div>
+                <div class="k-table-wrap">
+                    <table class="k-table">
+                        <thead><tr><th style="text-align: left;">Test Adı</th><th>Soru</th><th>D</th><th>Y</th><th>Net</th></tr></thead>
+                        <tbody id="pe-tbody"></tbody>
+                    </table>
+                </div>
+                <div class="k-footer" id="pe-footer"></div>
+                <div class="k-app-brand"><span>MuGöl Sınav Asistanı</span><small>Bu belge sistem tarafından otomatik hesaplanmıştır.</small></div>
+            </div>
+        </div>
+
+        <button class="btn btn-download" onclick="downloadResult()">📥 <span>Galeriye Kaydet</span></button>
+    </div>
+
+    <script>
+        // SINAV VERİTABANI
+        const exams = {
+            lgs: { name: 'LGS', inst: 'T.C. MİLLÎ EĞİTİM BAKANLIĞI', penalty: 3, base: 194.76, 
+                subs:[ {id:'lgs_tr', name:'Türkçe', max:20, c:4.33}, {id:'lgs_mat', name:'Matematik', max:20, c:4.33}, {id:'lgs_fen', name:'Fen', max:20, c:4.33}, {id:'lgs_ink', name:'İnkılap', max:10, c:1.68}, {id:'lgs_din', name:'Din', max:10, c:1.68}, {id:'lgs_ing', name:'Y. Dil', max:10, c:1.68} ]
+            },
+            yks: { name: 'YKS', inst: 'ÖSYM BAŞKANLIĞI', penalty: 4, base: 100, 
+                subs:[ 
+                    {id:'yks_tyt_tr', name:'TYT Türkçe', max:40, c_tyt: 3.3, c_ayt: 1.32}, 
+                    {id:'yks_tyt_mat', name:'TYT Mat', max:40, c_tyt: 3.3, c_ayt: 1.32}, 
+                    {id:'yks_tyt_sos', name:'TYT Sosyal', max:20, c_tyt: 3.4, c_ayt: 1.36}, 
+                    {id:'yks_tyt_fen', name:'TYT Fen', max:20, c_tyt: 3.4, c_ayt: 1.36},
+                    {id:'yks_ayt_mat', name:'AYT Mat', max:40, c_say: 3.0, c_ea: 3.0}, 
+                    {id:'yks_ayt_fiz', name:'AYT Fizik', max:14, c_say: 2.85}, 
+                    {id:'yks_ayt_kim', name:'AYT Kimya', max:13, c_say: 3.07}, 
+                    {id:'yks_ayt_biy', name:'AYT Biyo', max:13, c_say: 3.07}, 
+                    {id:'yks_ayt_edb', name:'AYT Edb', max:24, c_ea: 3.0, c_soz: 3.0}, 
+                    {id:'yks_ayt_tar1', name:'AYT Tar-1', max:10, c_ea: 2.8, c_soz: 2.8}, 
+                    {id:'yks_ayt_cog1', name:'AYT Coğ-1', max:6, c_ea: 3.33, c_soz: 3.33}, 
+                    {id:'yks_ayt_tar2', name:'AYT Tar-2', max:11, c_soz: 2.91}, 
+                    {id:'yks_ayt_cog2', name:'AYT Coğ-2', max:11, c_soz: 2.91}, 
+                    {id:'yks_ayt_fel', name:'AYT Felsefe', max:12, c_soz: 3.0}, 
+                    {id:'yks_ayt_din', name:'AYT Din', max:6, c_soz: 3.33},
+                    {id:'yks_ydt_dil', name:'YDT Dil', max:80, c_dil: 3.0}
+                ]
+            },
+            kpss: { name: 'KPSS (Lisans)', inst: 'ÖSYM BAŞKANLIĞI', penalty: 4, base: 40,
+                subs:[ {id:'kpss_gy', name:'Genel Yetenek', max:60, c:0.5}, {id:'kpss_gk', name:'Genel Kültür', max:60, c:0.5} ]
+            }
+        };
+
+        let activeTab = 'karne';
+        let isLiveBarClosed = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme(); buildExamGrids(); loadKarneData(); loadExamData(); switchTab('karne');
+        });
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('mugolThemeAll', isDark ? 'dark' : 'light');
+            document.getElementById('theme-btn').innerHTML = isDark ? '☀️ Gündüz Modu' : '🌙 Gece Modu';
+        }
+        function loadTheme() { if(localStorage.getItem('mugolThemeAll') === 'dark') toggleTheme(); }
+
+        function switchTab(tabId) {
+            activeTab = tabId;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            
+            document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`${tabId}-section`).classList.add('active');
+            
+            document.getElementById('exam-actions').style.display = tabId === 'karne' ? 'none' : 'flex';
+            document.getElementById('result-container').style.display = 'none';
+            isLiveBarClosed = false;
+            updateLiveIsland();
+        }
+
+        function closeLiveBar() { isLiveBarClosed = true; document.getElementById('live-status-bar').classList.remove('visible'); }
+
+        // --- KARNE ---
+        function createKarneCard(d = {name:'', hours:'', y1:'', y2:'', p1:'', p2:'', prj:''}) {
+            const card = document.createElement('div'); card.className = 'course-card karne-card';
+            card.innerHTML = `
+                <input type="text" class="c-name-input k-name" placeholder="Ders Adı" list="dersler" value="${d.name}" oninput="saveKarne(); updateLiveIsland()">
+                <div class="card-controls">
+                    <div class="hours-wrapper"><span>⏱️ Saat:</span><input type="number" class="k-hrs" placeholder="0" min="1" value="${d.hours}" oninput="saveKarne(); updateKarneAvg(this)"></div>
+                    <button class="btn-delete-card" onclick="removeKarneCourse(this)">✖</button>
+                </div>
+                <div class="karne-grades">
+                    <div class="grade-item row-top"><label>1.Yazılı</label><input type="number" class="k-g k-y1" placeholder="-" max="100" value="${d.y1}" oninput="handleKarneInput(this)"></div>
+                    <div class="grade-item row-top"><label>2.Yazılı</label><input type="number" class="k-g k-y2" placeholder="-" max="100" value="${d.y2}" oninput="handleKarneInput(this)"></div>
+                    <div class="grade-item row-top"><label>Proje</label><input type="number" class="k-g k-prj" placeholder="-" max="100" value="${d.prj}" oninput="handleKarneInput(this)"></div>
+                    <div class="grade-item row-bot"><label>1.Perf</label><input type="number" class="k-g k-p1" placeholder="-" max="100" value="${d.p1}" oninput="handleKarneInput(this)"></div>
+                    <div class="grade-item row-bot"><label>2.Perf</label><input type="number" class="k-g k-p2" placeholder="-" max="100" value="${d.p2}" oninput="handleKarneInput(this)"></div>
+                </div>
+                <div class="card-bottom">
+                    <div class="c-bg-progress k-prog"></div>
+                    <div class="c-content"><span class="c-status-text k-stat">Bekleniyor</span><span class="c-avg-val k-avg" data-avg="0">-</span></div>
+                </div>
+            `;
+            setTimeout(() => updateKarneAvg(card.querySelector('.k-hrs')), 50); return card;
+        }
+
+        function handleKarneInput(el) {
+            let v = parseFloat(el.value); if(v > 100) el.value = 100; if(v < 0) el.value = 0;
+            if(isNaN(v)) el.style.color = ''; else if(v<50) el.style.color = 'var(--danger)'; else el.style.color = 'var(--success)';
+            updateKarneAvg(el); saveKarne();
+        }
+
+        function updateKarneAvg(el) {
+            const card = el.closest('.karne-card');
+            const grades = [];['.k-y1', '.k-y2', '.k-p1', '.k-p2', '.k-prj'].forEach(sel => { const val = parseFloat(card.querySelector(sel).value); if(!isNaN(val)) grades.push(val); });
+            const avgEl = card.querySelector('.k-avg'), statEl = card.querySelector('.k-stat'), prog = card.querySelector('.k-prog'), bot = card.querySelector('.card-bottom');
+
+            bot.className = 'card-bottom';
+            if(grades.length > 0) {
+                const avg = grades.reduce((a,b)=>a+b,0)/grades.length; const rounded = Math.round(avg);
+                avgEl.innerText = rounded; avgEl.dataset.avg = avg; prog.style.width = Math.min(rounded, 100) + '%';
+                
+                if(rounded >= 85) { statEl.innerText = 'Harika'; bot.classList.add('status-success'); prog.style.background='var(--success)';}
+                else if(rounded >= 50) { statEl.innerText = 'Geçer'; bot.classList.add('status-warning'); prog.style.background='var(--warning)';}
+                else { statEl.innerText = 'Kaldı'; bot.classList.add('status-danger'); prog.style.background='var(--danger)';}
+            } else { avgEl.innerText = '-'; avgEl.dataset.avg = 0; statEl.innerText = 'Bekleniyor'; prog.style.width='0%'; }
+            updateLiveIsland();
+        }
+
+        function addKarneCourse(d={}) { document.getElementById('course-list').appendChild(createKarneCard(d)); saveKarne(); }
+        function removeKarneCourse(btn) { btn.closest('.karne-card').remove(); saveKarne(); updateLiveIsland(); }
+        function sortKarneCourses() { const list = document.getElementById('course-list'); const cards = Array.from(list.children); cards.sort((a,b) => (parseFloat(a.querySelector('.k-avg').dataset.avg)||0) - (parseFloat(b.querySelector('.k-avg').dataset.avg)||0)); list.innerHTML=''; cards.forEach(c => list.appendChild(c)); saveKarne(); }
+        function clearKarneData() { if(confirm("Karne sıfırlanacak!")) { localStorage.removeItem('mugolKarneV2'); document.getElementById('course-list').innerHTML=''; addKarneCourse({name:'Türkçe', hours:'5'}); addKarneCourse({name:'Matematik', hours:'5'}); updateLiveIsland(); } }
+        
+        function saveKarne() {
+            const c=[]; document.querySelectorAll('.karne-card').forEach(card => {
+                c.push({ name: card.querySelector('.k-name').value, hours: card.querySelector('.k-hrs').value, y1: card.querySelector('.k-y1').value, y2: card.querySelector('.k-y2').value, p1: card.querySelector('.k-p1').value, p2: card.querySelector('.k-p2').value, prj: card.querySelector('.k-prj').value });
+            }); localStorage.setItem('mugolKarneV2', JSON.stringify(c));
+        }
+        function loadKarneData() {
+            const saved = JSON.parse(localStorage.getItem('mugolKarneV2'));
+            if(saved && saved.length>0) saved.forEach(d => addKarneCourse(d)); else { addKarneCourse({name:'Türkçe', hours:'5'}); addKarneCourse({name:'Matematik', hours:'5'}); addKarneCourse({name:'Fen Bilimleri', hours:'4'}); }
+        }
+
+        function calcKarneGlobal() {
+            let pts = 0, hrs = 0, fail = false, data=[];
+            document.querySelectorAll('.karne-card').forEach(c => {
+                const n = c.querySelector('.k-name').value || 'Ders'; const h = parseFloat(c.querySelector('.k-hrs').value); const a = parseFloat(c.querySelector('.k-avg').dataset.avg);
+                if(h>0 && a>0) { pts+=(h*a); hrs+=h; data.push({n, h, a}); if(a<50) fail=true; }
+            });
+            return { avg: hrs>0 ? pts/hrs : 0, fail, data };
+        }
+
+        // --- SINAVLAR ---
+        function buildExamGrids() {
+            Object.keys(exams).forEach(eId => {
+                const grid = document.getElementById(`${eId}-grid`);
+                exams[eId].subs.forEach(sub => {
+                    grid.innerHTML += `
+                        <div class="course-card exam-card" id="card_${sub.id}" data-max="${sub.max}" data-exam="${eId}">
+                            <div class="c-name-static">${sub.name}</div>
+                            <div class="c-info">Maks: ${sub.max} Soru</div>
+                            <div class="exam-grades">
+                                <div class="grade-item"><label>Doğru</label><input type="number" class="e-d" placeholder="0" oninput="handleExamInput('${sub.id}')"></div>
+                                <div class="grade-item"><label>Yanlış</label><input type="number" class="e-y" placeholder="0" oninput="handleExamInput('${sub.id}')"></div>
+                            </div>
+                            <div class="card-bottom">
+                                <div class="c-bg-progress e-prog" id="prog_${sub.id}"></div>
+                                <div class="c-content"><span class="c-status-text">Net Sayısı</span><span class="c-avg-val" id="net_${sub.id}">0.00</span></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function handleExamInput(subId) {
+            const card = document.getElementById(`card_${subId}`);
+            const max = parseInt(card.dataset.max); const penalty = exams[card.dataset.exam].penalty;
+            let dInp = card.querySelector('.e-d'); let yInp = card.querySelector('.e-y');
+            let d = parseFloat(dInp.value)||0; let y = parseFloat(yInp.value)||0;
+
+            if(d<0) dInp.value=0; if(y<0) yInp.value=0;
+            if(d+y > max) { if(document.activeElement===dInp) dInp.value=max-y; else yInp.value=max-d; d=parseFloat(dInp.value)||0; y=parseFloat(yInp.value)||0; }
+
+            let net = d - (y/penalty); if(net<0) net=0;
+            document.getElementById(`net_${subId}`).innerText = net.toFixed(2);
+            
+            const prog = (net/max)*100; const pBar = document.getElementById(`prog_${subId}`); const bot = card.querySelector('.card-bottom');
+            pBar.style.width = prog+'%'; bot.className = 'card-bottom';
+            if(prog>70) { bot.classList.add('status-success'); pBar.style.background='var(--success)'; }
+            else if(prog>40) { bot.classList.add('status-warning'); pBar.style.background='var(--warning)'; }
+            else { bot.classList.add('status-danger'); pBar.style.background='var(--danger)'; }
+            
+            saveExamData(); updateLiveIsland();
+        }
+
+        function saveExamData() {
+            const d={}; document.querySelectorAll('.exam-card').forEach(c => { d[c.id] = { d: c.querySelector('.e-d').value, y: c.querySelector('.e-y').value }; });
+            const opts = { dp: document.getElementById('yks-diploma') ? document.getElementById('yks-diploma').value : '', meslek: document.getElementById('yks-meslek') ? document.getElementById('yks-meslek').checked : false };
+            localStorage.setItem('mugolExamsV6', JSON.stringify({data:d, opts}));
+        }
+
+        function loadExamData() {
+            const saved = JSON.parse(localStorage.getItem('mugolExamsV6'));
+            if(saved && saved.data) {
+                Object.keys(saved.data).forEach(id => {
+                    const c = document.getElementById(id);
+                    if(c) { c.querySelector('.e-d').value=saved.data[id].d; c.querySelector('.e-y').value=saved.data[id].y; handleExamInput(id.replace('card_','')); }
+                });
+                if(saved.opts) {
+                    if(document.getElementById('yks-diploma')) document.getElementById('yks-diploma').value = saved.opts.dp;
+                    if(document.getElementById('yks-meslek')) document.getElementById('yks-meslek').checked = saved.opts.meslek;
+                }
+            }
+        }
+        
+        function clearExamData() {
+            if(confirm("Mevcut sınav sıfırlanacak!")) {
+                document.querySelectorAll(`#${activeTab}-grid .exam-card`).forEach(c => { c.querySelector('.e-d').value=''; c.querySelector('.e-y').value=''; handleExamInput(c.id.replace('card_','')); });
+            }
+        }
+
+        function calcExamGlobal(eId) {
+            const exam = exams[eId]; let tNet = 0; let data =[]; let scores = {};
+            if (eId === 'yks') scores = { TYT: exam.base, SAY: exam.base, EA: exam.base, SÖZ: exam.base, DİL: exam.base };
+            else scores = { TOTAL: exam.base };
+
+            exam.subs.forEach(s => {
+                const net = parseFloat(document.getElementById(`net_${s.id}`).innerText)||0;
+                const card = document.getElementById(`card_${s.id}`);
+                const d = card.querySelector('.e-d').value||'0'; const y = card.querySelector('.e-y').value||'0';
+                if(d !== '0' || y !== '0') { tNet += net; data.push({ n: s.name, m: s.max, d, y, net: net.toFixed(2) }); }
+
+                if(eId === 'yks') {
+                    if(s.c_tyt) scores.TYT += net * s.c_tyt;
+                    if(s.c_ayt) { scores.SAY += net * s.c_ayt; scores.EA += net * s.c_ayt; scores.SÖZ += net * s.c_ayt; scores.DİL += net * s.c_ayt; }
+                    if(s.c_say) scores.SAY += net * s.c_say;
+                    if(s.c_ea) scores.EA += net * s.c_ea;
+                    if(s.c_soz) scores.SÖZ += net * s.c_soz;
+                    if(s.c_dil) scores.DİL += net * s.c_dil;
+                } else scores.TOTAL += (net * s.c);
+            });
+
+            let isMeslek = false;
+
+            if (eId === 'yks') {
+                let dp = parseFloat(document.getElementById('yks-diploma').value);
+                isMeslek = document.getElementById('yks-meslek').checked;
+                let obpAdd = 0; let meslekAdd = 0;
+                if(!isNaN(dp) && dp >= 50 && dp <= 100) { obpAdd = dp * 0.6; meslekAdd = isMeslek ? (dp * 0.3) : 0; }
+                
+                // OBP Tüm Puanlara Eklenir. Meslek Lisesi Ek Puanı (OBP x 0,06) yine Tüm Puanlara Eklenir.
+                scores.TYT = scores.TYT + obpAdd + meslekAdd;
+                scores.SAY = scores.SAY + obpAdd + meslekAdd;
+                scores.EA = scores.EA + obpAdd + meslekAdd;
+                scores.SÖZ = scores.SÖZ + obpAdd + meslekAdd;
+                scores.DİL = scores.DİL + obpAdd + meslekAdd;
+                
+                scores.MAX = Math.max(scores.TYT, scores.SAY, scores.EA, scores.SÖZ, scores.DİL);
+            }
+
+            return { scores, tNet, data, isMeslek };
+        }
+
+        function updateLiveIsland() {
+            const bar = document.getElementById('live-status-bar'), pBarContainer = document.getElementById('live-progress-bar'), pBar = document.getElementById('live-progress'), badge = document.getElementById('live-badge'), scoreTxt = document.getElementById('live-score-text'), label = document.getElementById('live-label'), target = document.getElementById('live-target-text');
+            if(isLiveBarClosed) { bar.classList.remove('visible'); return; }
+
+            if(activeTab === 'karne') {
+                const k = calcKarneGlobal(); if(k.data.length === 0) { bar.classList.remove('visible'); return; }
+                bar.classList.add('visible'); label.innerText = "Genel Ortalama"; scoreTxt.innerText = k.avg.toFixed(4); pBarContainer.style.display = 'block'; pBar.style.width = Math.min(k.avg, 100) + '%'; target.innerText = '';
+                if(k.fail) { badge.className='live-doc doc-danger'; badge.innerText='Zayıf Var'; pBar.style.background='var(--danger)'; target.innerText='Zayıfı düzeltmelisin'; target.style.color='var(--danger)';}
+                else if(k.avg>=85) { badge.className='live-doc doc-success'; badge.innerText='🏆 Takdir'; pBar.style.background='var(--success)';}
+                else if(k.avg>=70) { badge.className='live-doc doc-success'; badge.innerText='🏅 Teşekkür'; pBar.style.background='var(--success)';}
+                else { badge.className='live-doc doc-warning'; badge.innerText='Belge Yok'; pBar.style.background='var(--warning)';}
+            } else {
+                const e = calcExamGlobal(activeTab); if(e.tNet <= 0) { bar.classList.remove('visible'); return; }
+                bar.classList.add('visible'); pBarContainer.style.display = 'none'; badge.className='live-doc doc-success'; badge.innerText = 'Net: ' + e.tNet.toFixed(1); target.innerText = '';
+                if (activeTab === 'yks') { label.innerText = "YKS En Yüksek (Y-Puan)"; scoreTxt.innerText = e.scores.MAX.toFixed(3); } 
+                else { label.innerText = exams[activeTab].name + " Puanı"; scoreTxt.innerText = e.scores.TOTAL.toFixed(3); }
+            }
+        }
+
+        function triggerConfetti() {
+            if(typeof confetti === "function") {
+                const end = Date.now() + 1500;
+                (function frame() {
+                    confetti({ particleCount: 3, angle: 60, spread: 55, origin: {x:0}, colors:['#4f46e5', '#10b981', '#ec4899'] });
+                    confetti({ particleCount: 3, angle: 120, spread: 55, origin: {x:1}, colors:['#4f46e5', '#10b981', '#ec4899'] });
+                    if(Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        function generateKarneCard() {
+            const k = calcKarneGlobal(); if(k.data.length === 0) { alert('Lütfen en az bir ders girin!'); return; }
+            document.querySelectorAll('.print-area').forEach(el=>el.classList.remove('active')); document.getElementById('print-karne').classList.add('active');
+            const tbody = document.getElementById('print-karne-tbody'); tbody.innerHTML='';
+            k.data.forEach(d => { const fail = d.a < 50; tbody.innerHTML += `<tr><td>${d.n}</td><td>${d.h}</td><td><span class="k-grade-badge ${fail?'k-fail':'k-pass'}">${d.a.toFixed(2)}</span></td></tr>`; });
+            document.getElementById('print-karne-score').innerText = k.avg.toFixed(4);
+            const resBox = document.getElementById('print-karne-result'); let doc = "BELGE ALAMAZ"; resBox.className = 'k-result-box fail';
+            if(!k.fail) { if(k.avg>=85) { doc="TAKDİR BELGESİ"; resBox.className='k-result-box'; triggerConfetti(); } else if(k.avg>=70) { doc="TEŞEKKÜR BELGESİ"; resBox.className='k-result-box'; triggerConfetti(); } }
+            document.getElementById('print-karne-doc').innerText = doc; showResultBlock();
+        }
+
+        function generateExamCard() {
+            const eId = activeTab; const info = exams[eId]; const e = calcExamGlobal(eId);
+            if(e.data.length === 0) { alert('Lütfen en az bir ders için doğru/yanlış girin!'); return; }
+            document.querySelectorAll('.print-area').forEach(el=>el.classList.remove('active')); document.getElementById('print-exam').classList.add('active');
+            const tbody = document.getElementById('pe-tbody'); tbody.innerHTML='';
+            e.data.forEach(d => { tbody.innerHTML += `<tr><td>${d.n}</td><td>${d.m}</td><td>${d.d}</td><td>${d.y}</td><td style="font-weight:bold; color:var(--primary);">${d.net}</td></tr>`; });
+            document.getElementById('pe-inst').innerText = info.inst; document.getElementById('pe-name').innerText = info.name + " SONUÇ BELGESİ"; document.getElementById('pe-watermark').innerText = info.name + " SONUÇ";
+            
+            const footer = document.getElementById('pe-footer');
+            if (eId === 'yks') {
+                const pfx = e.isMeslek ? "Ek Puanlı Y-" : "Y-";
+                footer.innerHTML = `
+                    <div class="yks-scores">
+                        <div class="k-score-box"><span>${pfx}TYT Puanı</span><strong>${e.scores.TYT.toFixed(2)}</strong></div>
+                        <div class="k-score-box"><span>${pfx}Sayısal (SAY)</span><strong>${e.scores.SAY.toFixed(2)}</strong></div>
+                        <div class="k-score-box"><span>${pfx}Eşit Ağırlık (EA)</span><strong>${e.scores.EA.toFixed(2)}</strong></div>
+                        <div class="k-score-box"><span>${pfx}Sözel (SÖZ)</span><strong>${e.scores.SÖZ.toFixed(2)}</strong></div>
+                        <div class="k-score-box" style="grid-column: span 2;"><span>${pfx}Yabancı Dil (DİL)</span><strong>${e.scores.DİL.toFixed(2)}</strong></div>
+                    </div>
+                `;
+            } else { footer.innerHTML = `<div class="k-score-box"><span>Tahmini Toplam Puan</span><strong>${e.scores.TOTAL.toFixed(4)}</strong></div>`; }
+            triggerConfetti(); showResultBlock();
+        }
+
+        function showResultBlock() { document.getElementById('result-container').style.display = 'block'; setTimeout(() => document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' }), 100); }
+
+        function downloadResult() {
+            const printArea = document.getElementById(activeTab === 'karne' ? 'print-karne' : 'print-exam'); const btn = document.querySelector('.btn-download'); const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ <span>İşleniyor...</span>'; btn.disabled = true;
+            html2canvas(printArea, { scale: 3, backgroundColor: "#ffffff" }).then(canvas => {
+                const link = document.createElement('a'); link.download = `MuGol_Asistan_Sonuc.png`; link.href = canvas.toDataURL("image/png", 1.0); link.click();
+                btn.innerHTML = '✅ <span>İndirildi!</span>'; setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>
