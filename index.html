@@ -13,6 +13,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
+        /* ═══════════════════════════════════════
+           TEMA SİSTEMİ — 5 Tema
+           ═══════════════════════════════════════ */
+
+        /* 1. VARSAYILAN: İndigo/Mor */
         :root {
             --primary: #4f46e5;
             --primary-hover: #4338ca;
@@ -32,9 +37,16 @@
             --shadow-color: rgba(79, 70, 229, 0.12);
             --input-border: rgba(226, 232, 240, 1);
             --bottom-bar-bg: #f8fafc;
+            --bg-grad-1: rgba(79, 70, 229, 0.18);
+            --bg-grad-2: rgba(236, 72, 153, 0.15);
+            --bg-grad-3: rgba(16, 185, 129, 0.06);
         }
 
+        /* 2. GECE MODU (Dark) */
         body.dark-mode {
+            --primary: #818cf8;
+            --primary-hover: #6366f1;
+            --secondary: #f472b6;
             --bg-color: #0b0f19;
             --glass-bg: rgba(15, 23, 42, 0.85);
             --glass-border: rgba(255, 255, 255, 0.05);
@@ -46,6 +58,105 @@
             --shadow-color: rgba(0, 0, 0, 0.6);
             --input-border: rgba(51, 65, 85, 0.8);
             --bottom-bar-bg: #0f172a;
+            --bg-grad-1: rgba(99, 102, 241, 0.12);
+            --bg-grad-2: rgba(244, 114, 182, 0.08);
+            --bg-grad-3: rgba(16, 185, 129, 0.04);
+        }
+
+        /* 3. OKYANUS (Ocean Teal) */
+        body.theme-ocean {
+            --primary: #0891b2;
+            --primary-hover: #0e7490;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #f43f5e;
+            --bg-color: #ecfeff;
+            --glass-bg: rgba(255, 255, 255, 0.93);
+            --glass-border: rgba(8, 145, 178, 0.2);
+            --text-color: #0c4a6e;
+            --text-muted: #0369a1;
+            --input-bg: rgba(224, 247, 250, 0.8);
+            --card-bg: rgba(255, 255, 255, 1);
+            --card-hover: #f0fdfe;
+            --shadow-color: rgba(8, 145, 178, 0.14);
+            --input-border: rgba(186, 230, 253, 1);
+            --bottom-bar-bg: #f0fdfe;
+            --bg-grad-1: rgba(8, 145, 178, 0.15);
+            --bg-grad-2: rgba(6, 182, 212, 0.12);
+            --bg-grad-3: rgba(16, 185, 129, 0.07);
+        }
+
+        /* 4. ORMAN (Forest Green) */
+        body.theme-forest {
+            --primary: #059669;
+            --primary-hover: #047857;
+            --secondary: #34d399;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #f43f5e;
+            --bg-color: #f0fdf4;
+            --glass-bg: rgba(255, 255, 255, 0.93);
+            --glass-border: rgba(5, 150, 105, 0.2);
+            --text-color: #064e3b;
+            --text-muted: #065f46;
+            --input-bg: rgba(220, 252, 231, 0.8);
+            --card-bg: rgba(255, 255, 255, 1);
+            --card-hover: #f0fdf4;
+            --shadow-color: rgba(5, 150, 105, 0.14);
+            --input-border: rgba(167, 243, 208, 1);
+            --bottom-bar-bg: #f0fdf4;
+            --bg-grad-1: rgba(5, 150, 105, 0.15);
+            --bg-grad-2: rgba(52, 211, 153, 0.12);
+            --bg-grad-3: rgba(110, 231, 183, 0.07);
+        }
+
+        /* 5. GECE-OKYANUS (Dark Ocean) */
+        body.theme-midnight {
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --secondary: #818cf8;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #fb7185;
+            --bg-color: #020617;
+            --glass-bg: rgba(2, 6, 23, 0.88);
+            --glass-border: rgba(56, 189, 248, 0.1);
+            --text-color: #e2e8f0;
+            --text-muted: #64748b;
+            --input-bg: rgba(15, 23, 42, 0.7);
+            --card-bg: rgba(15, 23, 42, 0.95);
+            --card-hover: rgba(30, 41, 59, 1);
+            --shadow-color: rgba(56, 189, 248, 0.1);
+            --input-border: rgba(30, 41, 59, 1);
+            --bottom-bar-bg: #0f172a;
+            --bg-grad-1: rgba(56, 189, 248, 0.08);
+            --bg-grad-2: rgba(129, 140, 248, 0.06);
+            --bg-grad-3: rgba(52, 211, 153, 0.04);
+        }
+
+        /* 6. TURUNCU (Sunset Orange) */
+        body.theme-sunset {
+            --primary: #ea580c;
+            --primary-hover: #c2410c;
+            --secondary: #f97316;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #e11d48;
+            --bg-color: #fff7ed;
+            --glass-bg: rgba(255, 255, 255, 0.93);
+            --glass-border: rgba(234, 88, 12, 0.18);
+            --text-color: #431407;
+            --text-muted: #7c2d12;
+            --input-bg: rgba(255, 237, 213, 0.8);
+            --card-bg: rgba(255, 255, 255, 1);
+            --card-hover: #fff7ed;
+            --shadow-color: rgba(234, 88, 12, 0.14);
+            --input-border: rgba(253, 186, 116, 1);
+            --bottom-bar-bg: #fff7ed;
+            --bg-grad-1: rgba(234, 88, 12, 0.15);
+            --bg-grad-2: rgba(249, 115, 22, 0.12);
+            --bg-grad-3: rgba(251, 191, 36, 0.08);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', system-ui, -apple-system, sans-serif; }
@@ -58,9 +169,9 @@
         body {
             background-color: var(--bg-color);
             background-image:
-                radial-gradient(at 10% 10%, rgba(79, 70, 229, 0.18) 0px, transparent 50%),
-                radial-gradient(at 90% 90%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
-                radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.06) 0px, transparent 60%);
+                radial-gradient(at 10% 10%, var(--bg-grad-1) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, var(--bg-grad-2) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, var(--bg-grad-3) 0px, transparent 60%);
             background-attachment: fixed;
             color: var(--text-color);
             min-height: 100vh;
@@ -189,7 +300,11 @@
         .hours-wrapper span { font-size: 12px; font-weight: 800; color: var(--text-muted); flex-shrink: 0;}
         .hours-wrapper input { border: none !important; box-shadow: none !important; padding: 0; width: 30px; background: transparent; text-align: left; font-size: 15px; height: 100%;}
 
-        .c-grades-and-actions { display: flex; align-items: center; gap: 8px; flex-grow: 1; justify-content: flex-end; }
+        .c-grades-and-actions { display: flex; align-items: center; gap: 8px; flex-grow: 1; justify-content: flex-end; min-width: 0; }
+        /* Scroll fade efekti – sağda not alanı kesiliyorsa gradient */
+        @media (max-width: 650px) {
+            .c-grades-and-actions { position: relative; }
+        }
 
         .card-grades { display: flex; flex-direction: row; flex-wrap: nowrap !important; gap: 6px; justify-content: center; align-items: center; }
         
@@ -264,21 +379,45 @@
         .toast { overflow:hidden; position:fixed; }
 
         #summary-bar {
-            display: flex; justify-content: center; align-items: stretch; gap: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto;
             background: linear-gradient(135deg, rgba(79,70,229,0.08), rgba(236,72,153,0.08));
             border: 1.5px solid rgba(79,70,229,0.18);
             border-radius: 18px; margin-bottom: 14px; overflow: hidden;
         }
-        .summary-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 12px 10px; gap: 3px; min-width: 0; }
-        .summary-item:not(:last-child) { border-right: 1.5px solid rgba(79,70,229,0.12); }
-        .summary-label { font-size: 9px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .summary-value { font-size: 18px; font-weight: 900; line-height: 1.1; text-align: center;
-                         white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        /* İlk satır: Ders · Saat · Ort. (3 kolon) */
+        #summary-bar .summary-item:nth-child(-n+3) { border-bottom: 1.5px solid rgba(79,70,229,0.12); }
+        /* Alt satır: En İyi + En Zayıf → 2'şer kolon kaplar */
+        #summary-bar .summary-item:nth-child(4) { grid-column: span 1; }
+        #summary-bar .summary-item:nth-child(5) { grid-column: span 2; }
+        /* Dikey ayraçlar */
+        .summary-item:not(:nth-child(3)):not(:nth-child(5)) { border-right: 1.5px solid rgba(79,70,229,0.12); }
+
+        .summary-item { display: flex; flex-direction: column; align-items: center; padding: 10px 8px; gap: 3px; min-width: 0; }
+        .summary-item:hover { background: rgba(79,70,229,0.06); }
+        .summary-label { font-size: 9px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+        .summary-value {
+            font-size: 17px; font-weight: 900; line-height: 1.2; text-align: center;
+            overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+            /* tek satır, taşarsa küçül */
+            white-space: nowrap;
+        }
+        /* En İyi / En Zayıf: ders adı + puan alt alta */
+        .summary-value.sv-name {
+            font-size: 12px; font-weight: 800; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+            display: block;
+        }
+        .summary-value.sv-score {
+            font-size: 18px; font-weight: 900; display: block; line-height: 1;
+        }
         .summary-value.sv-primary { color: var(--primary); }
         .summary-value.sv-secondary { color: var(--secondary); }
         .summary-value.sv-success { color: var(--success); }
-        .summary-value.sv-warning { color: var(--warning); font-size: 13px; }
-        .summary-value.sv-best { color: var(--success); font-size: 13px; }
+        .summary-value.sv-warning { color: var(--warning); }
+        .summary-value.sv-best   { color: var(--success); }
+        .summary-value.sv-worst  { color: var(--danger); }
 
         .target-calc-panel {
             background: linear-gradient(135deg, rgba(79,70,229,0.06), rgba(236,72,153,0.04));
@@ -518,30 +657,77 @@
             .student-card .field:first-child { grid-column: span 2; }
         }
         @media (max-width: 650px) {
-            body { padding: 90px 8px 100px 8px; }
-            .container { padding: 20px 14px; border-radius: 26px;}
-            .header h1 { font-size: 16px; }
-            .header h1 .em { font-size: 22px; }
+            body { padding: 90px 6px 100px 6px; }
+            .container { padding: 18px 12px; border-radius: 24px; }
+            .header h1 { font-size: 15px; }
+            .header h1 .em { font-size: 20px; }
             .student-card { grid-template-columns: 1fr; }
             .student-card .field:first-child { grid-column: span 1; }
-            .course-card { flex-direction: column; align-items: stretch; padding: 14px 14px 14px 18px; gap: 12px; }
+
+            /* Ders kartı: tam sütun, dik düzen */
+            .course-card {
+                flex-direction: column; align-items: stretch;
+                padding: 12px 12px 12px 18px; gap: 10px;
+            }
             .c-info { width: 100%; justify-content: space-between; }
-            .c-grades-and-actions { width: 100%; justify-content: flex-start; gap: 8px; overflow-x: auto; padding-bottom: 4px; flex-wrap: nowrap; }
-            .card-grades { gap: 6px; }
-            .grade-item { width: 52px; min-width: 52px; }
-            .grade-item input { height: 44px; font-size: 15px; }
-            .c-actions { gap: 6px; }
-            .action-buttons { grid-template-columns: repeat(3, 1fr); gap: 8px;}
-            .btn { font-size: 12px; padding: 12px 6px; border-radius: 14px;}
+            input.c-name { width: auto; flex: 1; font-size: 13px; }
+            .hours-wrapper { width: 80px; }
+
+            /* Not alanı: yatay scroll, scroll bar gizli */
+            .c-grades-and-actions {
+                width: 100%; justify-content: flex-start; gap: 8px;
+                overflow-x: auto; padding-bottom: 6px; flex-wrap: nowrap;
+                scrollbar-width: none; -ms-overflow-style: none;
+            }
+            .c-grades-and-actions::-webkit-scrollbar { display: none; }
+
+            /* Not kutuları biraz büyüsün, parmakla basılabilir */
+            .card-grades { gap: 5px; }
+            .grade-item { width: 54px; min-width: 54px; }
+            .grade-item input { height: 46px; font-size: 15px; }
+            .grade-item label { font-size: 7.5px; }
+
+            /* Ortalama kutusu + sil butonu */
+            .c-actions { gap: 6px; flex-shrink: 0; }
+            .card-bottom { width: 108px; }
+
+            /* Butonlar */
+            .action-buttons { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .btn { font-size: 12px; padding: 12px 4px; border-radius: 14px; }
             .btn-calc { font-size: 14px; padding: 16px; border-radius: 18px; display: none; }
             .mobile-fab { display: inline-flex; }
-            .toast { right: 12px; left: 12px; bottom: 80px; max-width: none; }
+
+            /* Toast */
+            .toast { right: 10px; left: 10px; bottom: 78px; max-width: none; }
+
+            /* İndirme butonları */
             .download-bar { grid-template-columns: 1fr; }
-            #karne-print-area { padding: 24px 18px; }
-            .k-titles h2 { font-size: 20px; }
+
+            /* Karne yazdır */
+            #karne-print-area { padding: 20px 14px; }
+            .k-titles h2 { font-size: 18px; }
+
+            /* OBP */
             .obp-row { grid-template-columns: 1fr; gap: 8px; padding: 12px 14px; }
             .obp-result .val { font-size: 34px; }
-            .tab-btn { padding: 10px 12px; font-size: 12px; }
+            .tab-btn { padding: 9px 10px; font-size: 11px; }
+
+            /* Hızlı şablonlar küçük ekranda sarılabilir */
+            .quick-templates { flex-wrap: wrap; gap: 5px; }
+            .tpl-btn { font-size: 11px; padding: 5px 10px; }
+
+            /* Undo bar */
+            .undo-bar { flex-wrap: wrap; font-size: 11px; }
+        }
+
+        /* Küçük ekran: summary-bar 2-satır daha kompakt */
+        @media (max-width: 420px) {
+            #summary-bar { grid-template-columns: repeat(3, 1fr); }
+            .summary-label { font-size: 8px; letter-spacing: 0; }
+            .summary-value { font-size: 15px; }
+            .summary-value.sv-score { font-size: 16px; }
+            .summary-value.sv-name { font-size: 10px; }
+            .summary-item { padding: 8px 4px; }
         }
 
         /* ── YENİ: Animasyonlar ── */
@@ -657,6 +843,161 @@
 
         /* ── YENİ: Sıfırla onay animasyonu ── */
         .btn-clear.confirming { background:var(--danger); color:white; border-color:var(--danger); animation: bounceIn 0.3s; }
+
+        /* ══════════════════════════════════════════
+           TEMA SEÇİCİ PANELİ
+           ══════════════════════════════════════════ */
+        .theme-panel {
+            position:fixed; top:0; right:0; height:100vh; width:280px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-left: 1px solid var(--glass-border);
+            box-shadow: -20px 0 60px rgba(0,0,0,0.15);
+            z-index: 1100; padding: 28px 20px;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        .theme-panel.open { transform: translateX(0); }
+        .theme-panel-title {
+            font-size:14px; font-weight:900; color:var(--text-color);
+            display:flex; align-items:center; justify-content:space-between;
+            padding-bottom:14px; border-bottom:1.5px solid var(--input-border);
+        }
+        .btn-close-panel {
+            background:rgba(244,63,94,0.1); color:var(--danger); border:none;
+            width:32px; height:32px; border-radius:50%; font-size:14px; cursor:pointer;
+            transition:0.3s; display:flex; align-items:center; justify-content:center;
+        }
+        .btn-close-panel:hover { background:var(--danger); color:white; transform:rotate(90deg); }
+
+        .theme-section-label {
+            font-size:9px; font-weight:900; color:var(--text-muted);
+            text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px;
+        }
+        .theme-grid {
+            display:grid; grid-template-columns:1fr 1fr; gap:8px;
+        }
+        .theme-chip {
+            display:flex; flex-direction:column; align-items:center; gap:6px;
+            padding:10px 8px; border-radius:14px; cursor:pointer;
+            border:2px solid transparent; transition:all 0.25s;
+            background:var(--card-bg);
+        }
+        .theme-chip:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.12); }
+        .theme-chip.selected { border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
+        .theme-chip-swatch {
+            width:44px; height:28px; border-radius:8px;
+            display:flex; gap:3px; overflow:hidden; flex-shrink:0;
+        }
+        .theme-chip-swatch span { flex:1; }
+        .theme-chip-name { font-size:10px; font-weight:900; color:var(--text-color); text-align:center; }
+
+        /* Theme swatches */
+        .swatch-default .s1 { background:#4f46e5; } .swatch-default .s2 { background:#ec4899; } .swatch-default .s3 { background:#f1f5f9; }
+        .swatch-dark .s1 { background:#818cf8; } .swatch-dark .s2 { background:#f472b6; } .swatch-dark .s3 { background:#0b0f19; }
+        .swatch-ocean .s1 { background:#0891b2; } .swatch-ocean .s2 { background:#06b6d4; } .swatch-ocean .s3 { background:#ecfeff; }
+        .swatch-forest .s1 { background:#059669; } .swatch-forest .s2 { background:#34d399; } .swatch-forest .s3 { background:#f0fdf4; }
+        .swatch-midnight .s1 { background:#38bdf8; } .swatch-midnight .s2 { background:#818cf8; } .swatch-midnight .s3 { background:#020617; }
+        .swatch-sunset .s1 { background:#ea580c; } .swatch-sunset .s2 { background:#f97316; } .swatch-sunset .s3 { background:#fff7ed; }
+
+        /* Tema paneli açma butonu */
+        .btn-theme-open {
+            background: var(--card-bg); border: 1.5px solid var(--input-border);
+            color: var(--text-color); width:38px; height:38px; border-radius:12px;
+            font-size:16px; cursor:pointer; transition:all 0.3s;
+            display:flex; align-items:center; justify-content:center; flex-shrink:0;
+        }
+        .btn-theme-open:hover { border-color:var(--primary); color:var(--primary); transform:rotate(20deg) scale(1.1); box-shadow:0 6px 20px rgba(79,70,229,0.2); }
+
+        /* Theme panel overlay */
+        .panel-overlay {
+            position:fixed; inset:0; background:rgba(0,0,0,0.3);
+            z-index:1090; display:none; backdrop-filter:blur(2px);
+        }
+        .panel-overlay.open { display:block; }
+
+        /* ══════════════════════════════════════════
+           GELİŞTİRİLMİŞ HEADER
+           ══════════════════════════════════════════ */
+        .header-badge {
+            font-size:9px; font-weight:900; padding:3px 8px; border-radius:999px;
+            background:linear-gradient(135deg, var(--primary), var(--secondary));
+            color:white; letter-spacing:0.4px; margin-left:6px; vertical-align:middle;
+        }
+
+        /* ══════════════════════════════════════════
+           GELİŞTİRİLMİŞ KURS KARTI — Sol renk çubuğu
+           ══════════════════════════════════════════ */
+        .course-card::before {
+            content:''; position:absolute; left:0; top:12px; bottom:12px;
+            width:4px; border-radius:0 4px 4px 0;
+            background:linear-gradient(180deg, var(--primary), var(--secondary));
+            opacity:0.6; transition:all 0.3s;
+        }
+        .course-card:hover::before { opacity:1; top:6px; bottom:6px; }
+
+        /* ══════════════════════════════════════════
+           GELİŞTİRİLMİŞ SUMMARY BAR
+           ══════════════════════════════════════════ */
+        #summary-bar {
+            position:relative; overflow:hidden;
+        }
+        #summary-bar::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg, var(--primary), var(--secondary), var(--success));
+        }
+
+        /* ══════════════════════════════════════════
+           GELİŞTİRİLMİŞ BUTONLAR
+           ══════════════════════════════════════════ */
+        .btn-calc {
+            position:relative; overflow:hidden;
+        }
+        .btn-calc::after {
+            content:''; position:absolute; top:-50%; left:-60%; width:40%; height:200%;
+            background:rgba(255,255,255,0.15); transform:skewX(-20deg);
+            animation:shimmerBtn 3s infinite; pointer-events:none;
+        }
+        @keyframes shimmerBtn { 0%{left:-60%} 100%{left:160%} }
+
+        /* ══════════════════════════════════════════
+           GELİŞTİRİLMİŞ TOAST — Tema rengi
+           ══════════════════════════════════════════ */
+        .toast { border-left-color: var(--primary); }
+
+        /* ══════════════════════════════════════════
+           GELİŞTİRİLMİŞ TAB BUTTONS
+           ══════════════════════════════════════════ */
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 40%, transparent);
+        }
+
+        /* ══════════════════════════════════════════
+           GELİŞTİRİLMİŞ KARNE HEADER LOGO
+           ══════════════════════════════════════════ */
+        .k-logo-bar {
+            display:flex; align-items:center; justify-content:center; gap:10px;
+            margin-bottom:6px;
+        }
+        .k-logo-icon { font-size:32px; }
+        .k-logo-text { font-family:'Playfair Display',serif; font-size:13px; font-weight:700; color:#64748b; letter-spacing:2px; text-transform:uppercase; }
+
+        /* Mobil tema panel */
+        @media (max-width:650px) {
+            .theme-panel { width:100vw; max-width:320px; }
+        }
+
+        /* ══════════════════════════════════════════
+           TEMA GEÇİŞ ANİMASYONU
+           ══════════════════════════════════════════ */
+        body, body * {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+        /* Seçilen tema chip'i için pulse efekti */
+        @keyframes chipSelect { 0%{transform:scale(1)} 50%{transform:scale(0.94)} 100%{transform:scale(1)} }
+        .theme-chip.selecting { animation:chipSelect 0.25s ease; }
     </style>
 </head>
 <body>
@@ -690,6 +1031,56 @@
 
     <div id="toast" class="toast"></div>
 
+    <!-- TEMA PANELİ OVERLAY -->
+    <div class="panel-overlay" id="panel-overlay" onclick="closeThemePanel()"></div>
+
+    <!-- TEMA PANELİ -->
+    <div class="theme-panel" id="theme-panel">
+        <div class="theme-panel-title">
+            🎨 Tema Seç
+            <button class="btn-close-panel" onclick="closeThemePanel()">✕</button>
+        </div>
+        <div>
+            <div class="theme-section-label">Açık Temalar</div>
+            <div class="theme-grid">
+                <div class="theme-chip selected" id="chip-default" onclick="applyTheme('default')">
+                    <div class="theme-chip-swatch swatch-default"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+                    <span class="theme-chip-name">🔮 Mor (Varsayılan)</span>
+                </div>
+                <div class="theme-chip" id="chip-ocean" onclick="applyTheme('ocean')">
+                    <div class="theme-chip-swatch swatch-ocean"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+                    <span class="theme-chip-name">🌊 Okyanus</span>
+                </div>
+                <div class="theme-chip" id="chip-forest" onclick="applyTheme('forest')">
+                    <div class="theme-chip-swatch swatch-forest"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+                    <span class="theme-chip-name">🌿 Orman</span>
+                </div>
+                <div class="theme-chip" id="chip-sunset" onclick="applyTheme('sunset')">
+                    <div class="theme-chip-swatch swatch-sunset"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+                    <span class="theme-chip-name">🌅 Gün Batımı</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="theme-section-label">Koyu Temalar</div>
+            <div class="theme-grid">
+                <div class="theme-chip" id="chip-dark" onclick="applyTheme('dark')">
+                    <div class="theme-chip-swatch swatch-dark"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+                    <span class="theme-chip-name">🌙 Gece</span>
+                </div>
+                <div class="theme-chip" id="chip-midnight" onclick="applyTheme('midnight')">
+                    <div class="theme-chip-swatch swatch-midnight"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+                    <span class="theme-chip-name">🌌 Gece Yarısı</span>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:auto; padding-top:16px; border-top:1.5px solid var(--input-border);">
+            <div class="theme-section-label" style="margin-bottom:6px;">Aktif Tema</div>
+            <div id="active-theme-name" style="font-size:13px;font-weight:900;color:var(--primary);">🔮 Mor (Varsayılan)</div>
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);margin-top:4px;">Tercihler otomatik kaydedilir</div>
+        </div>
+    </div>
+
     <!-- YARDIM MODALİ -->
     <div class="modal-overlay" id="help-modal" onclick="if(event.target===this)toggleHelp()">
         <div class="modal-box">
@@ -709,9 +1100,10 @@
 
     <div class="container">
         <div class="header">
-            <h1><span class="em">📚</span> MuGöl Karne Not Hesaplama</h1>
+            <h1><span class="em">📚</span> MuGöl Karne Not Hesaplama <span class="header-badge">v2</span></h1>
             <div class="header-controls">
                 <button class="btn-help" onclick="toggleHelp()" title="Nasıl kullanılır?">❓</button>
+                <button class="btn-theme-open" onclick="openThemePanel()" title="Tema seç">🎨</button>
                 <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙 Gece</button>
             </div>
         </div>
@@ -752,8 +1144,16 @@
                 <div class="summary-item"><span class="summary-label">📚 Ders</span><span class="summary-value sv-primary" id="summary-course-count">0</span></div>
                 <div class="summary-item"><span class="summary-label">⏱️ Saat</span><span class="summary-value sv-secondary" id="summary-hour-total">0</span></div>
                 <div class="summary-item"><span class="summary-label">📊 Ort.</span><span class="summary-value sv-success" id="summary-avg-live">-</span></div>
-                <div class="summary-item"><span class="summary-label">🥇 En İyi</span><span class="summary-value sv-best" id="summary-best">-</span></div>
-                <div class="summary-item"><span class="summary-label">⚠️ En Zayıf</span><span class="summary-value sv-warning" id="summary-worst">-</span></div>
+                <div class="summary-item" style="min-width:0;">
+                    <span class="summary-label">🥇 En İyi</span>
+                    <span class="summary-value sv-score sv-best" id="summary-best-score">-</span>
+                    <span class="summary-value sv-name sv-best" id="summary-best-name" style="margin-top:1px;"></span>
+                </div>
+                <div class="summary-item" style="min-width:0;">
+                    <span class="summary-label">⚠️ En Zayıf</span>
+                    <span class="summary-value sv-score sv-worst" id="summary-worst-score">-</span>
+                    <span class="summary-value sv-name sv-worst" id="summary-worst-name" style="margin-top:1px;"></span>
+                </div>
             </div>
 
             <div id="target-calc-panel" class="target-calc-panel">
@@ -771,7 +1171,26 @@
             <div class="io-bar">
                 <button class="btn-export" onclick="exportData()">📤 Dışa Aktar</button>
                 <button class="btn-import" onclick="document.getElementById('file-import-input').click()">📥 İçe Aktar</button>
+                <button class="btn-export" style="color:#8b5cf6;border-color:rgba(139,92,246,0.25);" onclick="toggleBulkFill()">⚡ Toplu Doldur</button>
                 <input type="file" id="file-import-input" accept=".json" onchange="importData(event)">
+            </div>
+
+            <!-- Toplu Doldurma Paneli -->
+            <div id="bulk-fill-panel" style="display:none; margin-top:10px; background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(79,70,229,0.06)); border:1.5px solid rgba(139,92,246,0.25); border-radius:16px; padding:14px 16px;">
+                <div style="font-size:11px;font-weight:900;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">⚡ Tüm Derslere Aynı Notu Gir</div>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <input type="number" id="bulk-val" placeholder="Not (0-100)" min="0" max="100"
+                        style="width:120px;height:38px;border-radius:12px;padding:0 12px;font-size:14px;font-weight:900;text-align:center;border:2px solid rgba(139,92,246,0.4);background:var(--card-bg);color:var(--text-color);">
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <button onclick="bulkFill('y1')" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1.5px solid rgba(99,102,241,0.3);padding:7px 12px;border-radius:10px;font-size:11px;font-weight:900;cursor:pointer;">1.Yazılı</button>
+                        <button onclick="bulkFill('y2')" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1.5px solid rgba(99,102,241,0.3);padding:7px 12px;border-radius:10px;font-size:11px;font-weight:900;cursor:pointer;">2.Yazılı</button>
+                        <button onclick="bulkFill('prj')" style="background:rgba(245,158,11,0.1);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.3);padding:7px 12px;border-radius:10px;font-size:11px;font-weight:900;cursor:pointer;">Proje</button>
+                        <button onclick="bulkFill('p1')"  style="background:rgba(16,185,129,0.1);color:#10b981;border:1.5px solid rgba(16,185,129,0.3);padding:7px 12px;border-radius:10px;font-size:11px;font-weight:900;cursor:pointer;">1.Perf</button>
+                        <button onclick="bulkFill('p2')"  style="background:rgba(16,185,129,0.1);color:#10b981;border:1.5px solid rgba(16,185,129,0.3);padding:7px 12px;border-radius:10px;font-size:11px;font-weight:900;cursor:pointer;">2.Perf</button>
+                        <button onclick="bulkFill('uyg')" style="background:rgba(236,72,153,0.1);color:#ec4899;border:1.5px solid rgba(236,72,153,0.3);padding:7px 12px;border-radius:10px;font-size:11px;font-weight:900;cursor:pointer;">Uyg.</button>
+                        <button onclick="bulkFillAll()"   style="background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border:none;padding:7px 14px;border-radius:10px;font-size:11px;font-weight:900;cursor:pointer;">Tümü</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1602,14 +2021,23 @@
             const data = computeGrades();
             document.getElementById('summary-avg-live').innerText = data.validCourses > 0 ? data.finalAverage.toFixed(2) : '-';
 
-            const bestEl = document.getElementById('summary-best');
-            const worstEl = document.getElementById('summary-worst');
+            const bestScoreEl  = document.getElementById('summary-best-score');
+            const bestNameEl   = document.getElementById('summary-best-name');
+            const worstScoreEl = document.getElementById('summary-worst-score');
+            const worstNameEl  = document.getElementById('summary-worst-name');
             if (data.coursesData.length > 0) {
                 const sorted = [...data.coursesData].sort((a,b) => b.avg - a.avg);
-                bestEl.innerText = `${sorted[0].name} (${sorted[0].avg.toFixed(0)})`;
-                const w = sorted[sorted.length-1];
-                worstEl.innerText = `${w.name} (${w.avg.toFixed(0)})`;
-            } else { bestEl.innerText = '-'; worstEl.innerText = '-'; }
+                const best = sorted[0], worst = sorted[sorted.length-1];
+                if (bestScoreEl)  bestScoreEl.innerText  = best.avg.toFixed(1);
+                if (bestNameEl)   bestNameEl.innerText   = best.name;
+                if (worstScoreEl) worstScoreEl.innerText = worst.avg.toFixed(1);
+                if (worstNameEl)  worstNameEl.innerText  = worst.name;
+            } else {
+                if (bestScoreEl)  bestScoreEl.innerText  = '-';
+                if (bestNameEl)   bestNameEl.innerText   = '';
+                if (worstScoreEl) worstScoreEl.innerText = '-';
+                if (worstNameEl)  worstNameEl.innerText  = '';
+            }
 
             updateCardNumbers();
             updateBadges(data);
@@ -1624,6 +2052,8 @@
             else { liveBar.classList.remove('visible'); return; }
 
             document.getElementById('live-score-text').innerText = data.finalAverage.toFixed(4);
+            const ccEl = document.getElementById('live-course-count');
+            if (ccEl) ccEl.innerText = `${data.validCourses} ders · ${document.getElementById('summary-hour-total').innerText} saat`;
             const badge = document.getElementById('live-doc-badge');
             const progress = document.getElementById('live-progress');
             const targetText = document.getElementById('live-target-text');
@@ -1823,6 +2253,50 @@
         }
         let chartInstance = null;
 
+        function toggleBulkFill() {
+            const panel = document.getElementById('bulk-fill-panel');
+            const isHidden = panel.style.display === 'none';
+            panel.style.display = isHidden ? 'block' : 'none';
+            if (isHidden) {
+                panel.style.animation = 'slideInUp 0.3s ease';
+                setTimeout(() => document.getElementById('bulk-val').focus(), 50);
+            }
+        }
+
+        function bulkFill(type) {
+            const val = document.getElementById('bulk-val').value;
+            if (val === '' || isNaN(parseFloat(val))) { showToast('⚠️ Önce bir not gir', 'warning'); return; }
+            const numVal = Math.min(100, Math.max(0, parseFloat(val)));
+            const selector = '.g-' + type;
+            let count = 0;
+            document.querySelectorAll(selector).forEach(inp => {
+                inp.value = numVal;
+                checkInputColor(inp); toggleClearBtn(inp);
+                updateCardAvg(inp);
+                count++;
+            });
+            saveData();
+            showToast(`✅ ${count} derse ${numVal} girildi`, 'success');
+        }
+
+        function bulkFillAll() {
+            const val = document.getElementById('bulk-val').value;
+            if (val === '' || isNaN(parseFloat(val))) { showToast('⚠️ Önce bir not gir', 'warning'); return; }
+            const numVal = Math.min(100, Math.max(0, parseFloat(val)));
+            let count = 0;
+            document.querySelectorAll('.g-input').forEach(inp => {
+                inp.value = numVal;
+                checkInputColor(inp); toggleClearBtn(inp);
+                count++;
+            });
+            document.querySelectorAll('.course-card').forEach(card => {
+                const anyInp = card.querySelector('.g-input');
+                if (anyInp) updateCardAvg(anyInp);
+            });
+            saveData();
+            showToast(`✅ Tüm alanlara ${numVal} girildi (${count} alan)`, 'success');
+        }
+
         function renderStats() {
             const data = computeGrades();
             const courses = data.coursesData;
@@ -1923,6 +2397,106 @@
             }
         }
 
+    </script>
+
+    <script>
+        /* ═══════════════════════════════════════════
+           TEMA PANELİ SİSTEMİ
+           ═══════════════════════════════════════════ */
+        const THEMES = {
+            default:  { classes: [],                         label: '🔮 Mor (Varsayılan)' },
+            dark:     { classes: ['dark-mode'],              label: '🌙 Gece' },
+            ocean:    { classes: ['theme-ocean'],            label: '🌊 Okyanus' },
+            forest:   { classes: ['theme-forest'],           label: '🌿 Orman' },
+            midnight: { classes: ['theme-midnight'],         label: '🌌 Gece Yarısı' },
+            sunset:   { classes: ['theme-sunset'],           label: '🌅 Gün Batımı' },
+        };
+
+        const THEME_BODY_CLASSES = ['dark-mode','theme-ocean','theme-forest','theme-midnight','theme-sunset'];
+        let currentTheme = 'default';
+
+        function openThemePanel() {
+            document.getElementById('theme-panel').classList.add('open');
+            document.getElementById('panel-overlay').classList.add('open');
+        }
+        function closeThemePanel() {
+            document.getElementById('theme-panel').classList.remove('open');
+            document.getElementById('panel-overlay').classList.remove('open');
+        }
+
+        function applyTheme(themeKey) {
+            if (!THEMES[themeKey]) return;
+            // Chip select animasyonu
+            const chip = document.getElementById('chip-' + themeKey);
+            if (chip) { chip.classList.add('selecting'); setTimeout(() => chip.classList.remove('selecting'), 300); }
+
+            // Tüm tema sınıflarını kaldır
+            THEME_BODY_CLASSES.forEach(c => document.body.classList.remove(c));
+
+            // Yeni tema sınıflarını ekle
+            THEMES[themeKey].classes.forEach(c => document.body.classList.add(c));
+            currentTheme = themeKey;
+
+            // Chip seçim görünümü
+            document.querySelectorAll('.theme-chip').forEach(ch => ch.classList.remove('selected'));
+            if (chip) chip.classList.add('selected');
+
+            // Aktif tema adı
+            const nameEl = document.getElementById('active-theme-name');
+            if (nameEl) nameEl.textContent = THEMES[themeKey].label;
+
+            // Gece modu butonunu güncelle
+            const themeBtn = document.getElementById('theme-btn');
+            if (themeBtn) {
+                const isDark = themeKey === 'dark' || themeKey === 'midnight';
+                themeBtn.textContent = isDark ? '☀️ Gündüz' : '🌙 Gece';
+            }
+
+            // Meta renk
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            const primaryColors = { default:'#4f46e5', dark:'#818cf8', ocean:'#0891b2', forest:'#059669', midnight:'#38bdf8', sunset:'#ea580c' };
+            if (metaTheme) metaTheme.content = primaryColors[themeKey] || '#4f46e5';
+
+            // Kaydet
+            try { localStorage.setItem('mugol-theme', themeKey); } catch(e){}
+            showToast('🎨 ' + THEMES[themeKey].label + ' teması uygulandı', 'success');
+
+            // Grafiği yeniden çiz (renk değişimine uyum)
+            if (typeof renderStats === 'function') setTimeout(renderStats, 450);
+        }
+
+        // toggleTheme artık sadece default ↔ dark arasında geçiş yapar
+        const _origToggleTheme = window.toggleTheme;
+        window.toggleTheme = function() {
+            if (currentTheme === 'dark' || currentTheme === 'midnight') {
+                applyTheme('default');
+            } else {
+                applyTheme('dark');
+            }
+        };
+
+        // Kayıtlı temayı yükle
+        (function loadSavedTheme() {
+            try {
+                const saved = localStorage.getItem('mugol-theme');
+                if (saved && THEMES[saved]) {
+                    // Varsayılan loadData zaten dark-mode'u yüklüyor;
+                    // Burada sadece default dışı temalar için override edelim
+                    setTimeout(() => {
+                        if (saved !== 'dark') { // dark-mode'u loadData yönetiyor
+                            applyTheme(saved);
+                        } else {
+                            currentTheme = 'dark';
+                            document.querySelectorAll('.theme-chip').forEach(ch => ch.classList.remove('selected'));
+                            const chip = document.getElementById('chip-dark');
+                            if (chip) chip.classList.add('selected');
+                            const nameEl = document.getElementById('active-theme-name');
+                            if (nameEl) nameEl.textContent = THEMES['dark'].label;
+                        }
+                    }, 100);
+                }
+            } catch(e){}
+        })();
     </script>
 </body>
 </html>
